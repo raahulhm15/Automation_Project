@@ -1,3 +1,5 @@
+
+
 name="rahul"
 s3_bucket="upgrad-rahulhm"
 
@@ -28,3 +30,22 @@ then
     aws s3 cp /tmp/${name}-httpd-logs-${timestamp}.tar s3://${s3_bucket}/${name}-httpd-logs-${timestamp}.tar
 fi
 
+
+
+docroot="/var/www/html"
+
+if [ ! -f ${docroot}/inventory.html ];
+then
+    echo -e 'Log Type\t-\tTime Created\t-\tType\t-\tSize' >${docroot}/inventory.html
+fi
+if [[ -f ${docroot}/inventory.html ]];
+then
+    size=$(du -h /tmp/${name}-httpd-logs-${timestamp}.tar | awk '{print $1}')
+	echo -e "httpd-logs\t-\t${timestamp}\t-\ttar\t-\t${size}" >> ${docroot}/inventory.html
+fi
+
+
+if [[ ! -f /etc/cron.d/Automation ]];
+then
+	sudo echo " * * * * *root /root/Automation_project/Automation.sh" >> /etc/cron.d/Automation
+fi
